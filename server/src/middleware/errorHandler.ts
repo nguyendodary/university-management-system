@@ -17,30 +17,46 @@ export class ApiError extends Error implements AppError {
   }
 }
 
+// Paths to ignore in error logging
+const IGNORED_PATHS = [
+  "/favicon.ico",
+  "/.well-known",
+  "/robots.txt",
+  "/sitemap.xml",
+];
+
 export const errorHandler = (
   err: Error | AppError,
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction
 ): void => {
   const statusCode = (err as AppError).statusCode || 500;
   const message = err.message || "Internal Server Error";
+  const shouldIgnore = IGNORED_PATHS.some((path) => req.path.startsWith(path));
 
-  console.error(`[Error] ${statusCode}: ${message}`, {
-    stack: err.stack,
-    path: _req.path,
-    method: _req.method,
-  });
+  // Only log errors that aren't from ignored paths
+  if (!shouldIgnore) {
+    if (statusCode === 404) {
+      console.log(`[404] ${req.method} ${req.path}`);
+    } else {
+      console.error(`[Error] ${statusCode}: ${message}`, {
+        path: req.path,
+        method: req.method,
+        ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+      });
+    }
+  }
 
   res.status(statusCode).json({
     success: false,
     message,
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    ...(process.env.NODE_ENV === "development" && statusCode !== 404 && { stack: err.stack }),
   });
 };
 
 export const notFoundHandler = (
-  _req: Request,
+  req: Request,
   _res: Response,
   next: NextFunction
 ): void => {
