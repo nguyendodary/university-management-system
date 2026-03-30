@@ -10,7 +10,6 @@
     "lint": "eslint . --ext ts,tsx"
   },
   "dependencies": {
-    "@ant-design/charts": "^2.2.1",
     "@ant-design/icons": "^5.6.1",
     "@refinedev/antd": "^5.44.0",
     "@refinedev/cli": "^2.16.42",

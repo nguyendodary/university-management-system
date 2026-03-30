@@ -14,7 +14,7 @@ Full-stack PERN application for managing students, courses, and enrollments with
 
 - JWT authentication with role-based access (Admin, Teacher, Student)
 - CRUD for Users, Students, Courses, Enrollments
-- Dashboard with statistics and charts
+- Dashboard with statistics (totals, role distribution, top courses, recent enrollments)
 - Avatar uploads via Cloudinary
 - Swagger API documentation at `/api-docs`
 
@@ -79,6 +79,13 @@ Frontend: http://localhost:5173 | API: http://localhost:5000/api | Docs: http://
 
 Full Swagger documentation available at `http://localhost:5000/api-docs`
 
+### System
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api` | API info & endpoints list |
+| GET | `/api/health` | Health check |
+
 ### Auth
 
 | Method | Endpoint | Description |
@@ -86,6 +93,7 @@ Full Swagger documentation available at `http://localhost:5000/api-docs`
 | POST | `/api/auth/register` | Register new user |
 | POST | `/api/auth/login` | Login |
 | POST | `/api/auth/logout` | Logout |
+| POST | `/api/auth/refresh-token` | Refresh access token |
 | GET | `/api/auth/me` | Get current user (Auth) |
 
 ### Users
@@ -140,9 +148,13 @@ Full Swagger documentation available at `http://localhost:5000/api-docs`
 ## Project Structure
 
 ```
+├── .gitignore
 ├── docker-compose.yml
+├── Dockerfile
 ├── Dockerfile.server
 ├── Dockerfile.client
+├── package.json
+├── README.md
 │
 ├── server/
 │   ├── src/
@@ -152,16 +164,25 @@ Full Swagger documentation available at `http://localhost:5000/api-docs`
 │   │   ├── models/          # Drizzle schema
 │   │   ├── routes/          # Express routes
 │   │   ├── utils/           # Helpers, seed, validation
-│   │   ├── swagger.json     # API documentation
+│   │   ├── swagger.json     # OpenAPI documentation
 │   │   └── index.ts         # Entry point
-│   └── package.json
+│   ├── drizzle.config.ts
+│   ├── tsconfig.json
+│   ├── package.json
+│   └── .env.example
 │
 └── client/
     ├── src/
     │   ├── components/      # Layout
     │   ├── pages/           # React pages
     │   ├── providers/       # Auth & data providers
-    │   └── App.tsx
+    │   ├── App.tsx
+    │   ├── main.tsx
+    │   └── index.css
+    ├── nginx.conf           # Nginx config for production
+    ├── index.html
+    ├── vite.config.ts
+    ├── tsconfig.json
     └── package.json
 ```
 
