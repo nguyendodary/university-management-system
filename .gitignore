@@ -1,7 +1,5 @@
 # Dependencies
 node_modules/
-client/node_modules/
-server/node_modules/
 
 # Environment variables (contains secrets)
 .env
@@ -11,11 +9,9 @@ server/.env
 
 # Build output
 dist/
-client/dist/
-server/dist/
 
 # Vite cache
-client/node_modules/.vite/
+.vite/
 
 # IDE
 .vscode/
@@ -37,3 +33,6 @@ npm-debug.log*
 
 # Coverage
 coverage/
+
+# Docker
+.docker/

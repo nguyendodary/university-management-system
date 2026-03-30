@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { eq, count } from "drizzle-orm";
+import { eq, and, count } from "drizzle-orm";
 import { db } from "../config/database.js";
 import { enrollments, students, courses, users } from "../models/schema.js";
 import { ApiError } from "../middleware/errorHandler.js";
@@ -140,22 +140,16 @@ export const createEnrollment = async (
       throw new ApiError(404, "Course not found");
     }
 
+    // Check if already enrolled in this specific course
     const [existingEnrollment] = await db
       .select()
       .from(enrollments)
       .where(
-        eq(enrollments.studentId, studentId)
+        and(eq(enrollments.studentId, studentId), eq(enrollments.courseId, courseId))
       )
       .limit(1);
 
-    // Check if already enrolled in this specific course
-    const duplicate = await db
-      .select()
-      .from(enrollments)
-      .where(eq(enrollments.studentId, studentId))
-      .then((rows) => rows.find((r) => r.courseId === courseId));
-
-    if (duplicate) {
+    if (existingEnrollment) {
       throw new ApiError(400, "Student is already enrolled in this course");
     }
 
